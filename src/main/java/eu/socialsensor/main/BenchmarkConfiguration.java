@@ -154,27 +154,33 @@ public class BenchmarkConfiguration {
         final Configuration csv = metrics.subset(CSV);
         this.csvReportingInterval = metrics.getLong(CSV_INTERVAL, 1000 /*ms*/);
         this.csvDir =
-                csv.containsKey(CSV_DIR) ? new File(csv.getString(CSV_DIR, System.getProperty("user.dir") /*default*/)) : null;
+                csv.containsKey(CSV_DIR) ? new File(csv.getString(CSV_DIR, System.getProperty("user.dir") /*default*/)) :
+                        null;
 
         Configuration dynamodb = socialsensor.subset("dynamodb");
         this.dynamodbWorkerThreads = dynamodb.getInt("workers", 25);
         Configuration credentials = dynamodb.subset(CREDENTIALS);
         this.dynamodbPrecreateTables = dynamodb.getBoolean("precreate-tables", Boolean.FALSE);
         this.dynamodbTps = Math.max(1, dynamodb.getLong(TPS, 750 /*default*/));
-        this.dynamodbConsistentRead = dynamodb.containsKey(CONSISTENT_READ) ? dynamodb.getBoolean(CONSISTENT_READ) : false;
+        this.dynamodbConsistentRead =
+                dynamodb.containsKey(CONSISTENT_READ) ? dynamodb.getBoolean(CONSISTENT_READ) : false;
         this.dynamodbDataModel = dynamodb.containsKey("data-model") ? BackendDataModel.valueOf(dynamodb
                 .getString("data-model")) : null;
-        this.dynamodbCredentialsFqClassName = credentials.containsKey(CLASS_NAME) ? credentials.getString(CLASS_NAME) : null;
+        this.dynamodbCredentialsFqClassName =
+                credentials.containsKey(CLASS_NAME) ? credentials.getString(CLASS_NAME) :
+                        null;
         this.dynamodbCredentialsCtorArguments = credentials.containsKey(CONSTRUCTOR_ARGS) ? credentials
                 .getString(CONSTRUCTOR_ARGS) : null;
         this.dynamodbEndpoint = dynamodb.containsKey(ENDPOINT) ? dynamodb.getString(ENDPOINT) : null;
-        this.dynamodbTablePrefix = dynamodb.containsKey(TABLE_PREFIX) ? dynamodb.getString(TABLE_PREFIX) : Constants.DYNAMODB_TABLE_PREFIX.getDefaultValue();
+        this.dynamodbTablePrefix = dynamodb.containsKey(TABLE_PREFIX) ? dynamodb.getString(TABLE_PREFIX) :
+                Constants.DYNAMODB_TABLE_PREFIX.getDefaultValue();
 
         Configuration orient = socialsensor.subset("orient");
         orientLightweightEdges = orient.containsKey(LIGHTWEIGHT_EDGES) ? orient.getBoolean(LIGHTWEIGHT_EDGES) : null;
 
         Configuration sparksee = socialsensor.subset("sparksee");
-        sparkseeLicenseKey = sparksee.containsKey(LICENSE_KEY) ? sparksee.getString(LICENSE_KEY) : null;
+        sparkseeLicenseKey = sparksee.containsKey(LICENSE_KEY) ? sparksee.getString(LICENSE_KEY) :
+                null;
 
         Configuration titan = socialsensor.subset(TITAN); //TODO(amcp) move dynamodb ns into titan
         bufferSize = titan.getInt(BUFFER_SIZE, GraphDatabaseConfiguration.BUFFER_SIZE.getDefaultValue());
