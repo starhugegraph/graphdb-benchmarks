@@ -153,8 +153,8 @@ public class BenchmarkConfiguration {
 
         final Configuration csv = metrics.subset(CSV);
         this.csvReportingInterval = metrics.getLong(CSV_INTERVAL, 1000 /*ms*/);
-        this.csvDir = csv.containsKey(CSV_DIR) ?
-                new File(csv.getString(CSV_DIR, System.getProperty("user.dir") /*default*/)) : null;
+        this.csvDir = csv.containsKey(CSV_DIR)
+                ? new File(csv.getString(CSV_DIR, System.getProperty("user.dir") /*default*/)) : null;
 
         Configuration dynamodb = socialsensor.subset("dynamodb");
         this.dynamodbWorkerThreads = dynamodb.getInt("workers", 25);
