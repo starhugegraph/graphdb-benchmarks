@@ -199,11 +199,12 @@ public class Utils
         else if (GraphDatabaseType.SPARKSEE == type)
         {
             graphDatabase = new SparkseeGraphDatabase(config, dbStorageDirectory);
-        } else if (GraphDatabaseType.HUGEGRAPH_CASSANDRA == type){
-
+        }
+        else if (GraphDatabaseType.HUGEGRAPH_CASSANDRA == type)
+        {
             graphDatabase = new HugeGraphDatabase(config, dbStorageDirectory);
-
-        } else
+        }
+        else
         {
             // For safety, will handle the null case
             throw new IllegalArgumentException("Unknown type: " + type == null ? "null" : type.toString());
