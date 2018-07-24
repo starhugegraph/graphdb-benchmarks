@@ -9,12 +9,6 @@
     <name>graphdb-benchmarks</name>
     <url>https://github.com/socialsensor/graphdb-benchmarks</url>
     <description>Performance benchmark between popular graph databases.</description>
-    <distributionManagement>
-        <snapshotRepository>
-            <id>Baidu_Local_Snapshots</id>
-            <url>http://maven.scm.baidu.com:8081/nexus/content/repositories/Baidu_Local_Snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
@@ -66,8 +60,8 @@
         <maven.surefire.version>2.18.1</maven.surefire.version>
         <jdk.version>1.8</jdk.version>
         <metrics.version>3.0.0-BETA3</metrics.version>
-        <hugegraph.dist.version>0.5.6-SNAPSHOT</hugegraph.dist.version>
-        <hugegraph.client.version>1.5.0-SNAPSHOT</hugegraph.client.version>
+        <hugegraph.dist.version>0.6.1</hugegraph.dist.version>
+        <hugegraph.client.version>1.5.6</hugegraph.client.version>
     </properties>
 
     <dependencies>
