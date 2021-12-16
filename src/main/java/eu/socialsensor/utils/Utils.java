@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -101,13 +102,44 @@ public class Utils
         List<List<String>> result = new LinkedList<List<String>>();
 
         lines.subList(numberOfLinesToSkip, lines.size()).parallelStream()
-            .forEachOrdered(line -> result.add(Arrays.asList(line.split("\t"))));
+            .forEachOrdered(line -> result.add(Arrays.asList(line.split("\\s+"))));
         return result;
     }
 
     public static final List<List<String>> readTabulatedLines(File file, int numberOfLinesToSkip)
     {
         return parseTabulatedLines(readlines(file), numberOfLinesToSkip);
+    }
+
+    public static final Iterator<List<String>> getTabulatedLineIterator(File file,
+                                                                        int numberOfLinesToSkip) {
+        LineIterator it;
+        try
+        {
+            it = FileUtils.lineIterator(file, "UTF-8");
+        }
+        catch (IOException e)
+        {
+            throw new BenchmarkingException("Unable to read lines from file: " + file.getAbsolutePath(), e);
+        }
+
+        for (int i = 0; i < numberOfLinesToSkip; i++) {
+            if (it.hasNext()) {
+                it.next();
+            }
+        }
+
+        return new Iterator<List<String>>() {
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public List<String> next() {
+                return Arrays.asList(it.next().split("\\s+"));
+            }
+        };
     }
 
     public static void deleteRecursively(File file)

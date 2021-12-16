@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
+import org.apache.commons.collections.iterators.FilterIterator;
 import org.apache.commons.math3.util.MathArrays;
 
 import eu.socialsensor.utils.Utils;
@@ -18,36 +20,24 @@ import eu.socialsensor.utils.Utils;
  */
 public class Dataset implements Iterable<List<String>>
 {
-    private final List<List<String>> data;
+    private final Iterator<List<String>> data;
+    private final Set<Integer> nodes = new HashSet<>();
+    private final Random random = new Random();
 
     public Dataset(File datasetFile)
     {
-        data = Utils.readTabulatedLines(datasetFile, 4 /* numberOfLinesToSkip */);
+        data = Utils.getTabulatedLineIterator(datasetFile, 4 /* numberOfLinesToSkip */);
     }
 
     public Set<Integer> generateRandomNodes(int numRandomNodes)
     {
-        Set<String> nodes = new HashSet<String>();
-        for (List<String> line : data.subList(4, data.size()))
-        {
-            for (String nodeId : line)
-            {
-                nodes.add(nodeId.trim());
-            }
-        }
-
-        List<String> nodeList = new ArrayList<String>(nodes);
-        int[] nodeIndexList = new int[nodeList.size()];
-        for (int i = 0; i < nodeList.size(); i++)
-        {
-            nodeIndexList[i] = i;
-        }
-        MathArrays.shuffle(nodeIndexList);
-
+        List<Integer> nodeList = new ArrayList<Integer>(nodes);
         Set<Integer> generatedNodes = new HashSet<Integer>();
-        for (int i = 0; i < numRandomNodes; i++)
-        {
-            generatedNodes.add(Integer.valueOf(nodeList.get(nodeIndexList[i])));
+        for (int i = 0; i < numRandomNodes * 2; i++) {
+            generatedNodes.add(nodeList.get(random.nextInt(nodeList.size())));
+            if (generatedNodes.size() >= numRandomNodes) {
+                break;
+            }
         }
         return generatedNodes;
     }
@@ -55,6 +45,11 @@ public class Dataset implements Iterable<List<String>>
     @Override
     public Iterator<List<String>> iterator()
     {
-        return data.iterator();
+        return new FilterIterator(data, line ->{
+            for (String nodeId : (List<String> )line) {
+                nodes.add(Integer.parseInt(nodeId.trim()));
+            }
+            return true;
+        });
     }
 }

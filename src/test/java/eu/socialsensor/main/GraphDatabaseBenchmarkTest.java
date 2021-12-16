@@ -19,6 +19,6 @@ public class GraphDatabaseBenchmarkTest
             fail("Got unexpected exception: " + e.getMessage());
         }
 
-        //bench.cleanup();
+        bench.cleanup();
     }
 }
