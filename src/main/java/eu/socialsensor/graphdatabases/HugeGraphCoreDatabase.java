@@ -21,6 +21,7 @@ package eu.socialsensor.graphdatabases;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,6 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.baidu.hugegraph.config.HugeConfig;
+import com.baidu.hugegraph.config.ServerOptions;
+import com.baidu.hugegraph.type.define.NodeRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
@@ -225,8 +229,9 @@ public class HugeGraphCoreDatabase extends GraphDatabaseBase<
         ShortestPathTraverser traverser = new ShortestPathTraverser(this.graph);
         List<Id> path = traverser.shortestPath(fromNode.id(),
                                                IdGenerator.of(node.longValue()),
-                                               Directions.OUT, SIMILAR, 5,
-                                               -1, 0, -1);
+                                                Directions.OUT,
+                                                Collections.singletonList(SIMILAR), 5,
+                                                -1, 0, -1).vertices();
         LOG.debug("{}", path);
     }
 
@@ -495,7 +500,7 @@ public class HugeGraphCoreDatabase extends GraphDatabaseBase<
             }
         } catch (Exception ignored) {
         }
-        // Open graph using configuration file
+       // Open graph using configuration file
         HugeGraph graph = HugeFactory.open(conf);
 
         // Clear graph if needed
@@ -503,6 +508,11 @@ public class HugeGraphCoreDatabase extends GraphDatabaseBase<
             graph.clearBackend();
             // Init backend
             graph.initBackend();
+            // start graph
+            HugeConfig config = new HugeConfig(conf);
+            Id serverId =  IdGenerator.of(config.get(ServerOptions.SERVER_ID));
+            NodeRole role = NodeRole.valueOf(config.get(ServerOptions.SERVER_ROLE).toUpperCase());
+            graph.serverStarted(serverId, role);
         }
 
         return graph;

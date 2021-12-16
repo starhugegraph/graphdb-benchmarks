@@ -62,6 +62,7 @@ public class BenchmarkConfiguration {
 
     // hugegraph configuration
     private static final String HUGEGRAPH_URL = "url";
+    private static final String HUGEGRAPH_SPACE = "graphspace";
     private static final String HUGEGRAPH_GRAPH = "graph";
 
     private static final Set<String> metricsReporters = new HashSet<String>();
@@ -116,6 +117,7 @@ public class BenchmarkConfiguration {
 
     // hugegraph
     private final String hugegraphUrl;
+    private final String hugegraphSpace;
     private final String hugegraphGraph;
 
     public String getDynamodbCredentialsFqClassName() {
@@ -141,6 +143,7 @@ public class BenchmarkConfiguration {
         // hugegraph
         Configuration hugegraph = socialsensor.subset("hugegraph");
         this.hugegraphUrl = hugegraph.getString(HUGEGRAPH_URL);
+        this.hugegraphSpace = hugegraph.getString(HUGEGRAPH_SPACE);
         this.hugegraphGraph = hugegraph.getString(HUGEGRAPH_GRAPH);
 
         // metrics
@@ -427,4 +430,6 @@ public class BenchmarkConfiguration {
     public String getHugegraphGraph() {
         return hugegraphGraph;
     }
+
+    public String getHugegraphSpace() { return hugegraphSpace; }
 }

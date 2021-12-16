@@ -187,9 +187,9 @@ public class HugeGraphDatabase extends GraphDatabaseBase<
     }
 
     private void buildGraphEnv(boolean clear) {
-        this.hugeClient = new HugeClient(this.conf.getHugegraphUrl(),
-                                         this.conf.getHugegraphGraph(),
-                                         CLIENT_TIMEOUT);
+        this.hugeClient = HugeClient.builder(
+                this.conf.getHugegraphUrl(), this.conf.getHugegraphSpace(), this.conf.getHugegraphGraph())
+                .configTimeout(CLIENT_TIMEOUT).build();
         this.gremlin = this.hugeClient.gremlin();
         SchemaManager schema = this.hugeClient.schema();
 
