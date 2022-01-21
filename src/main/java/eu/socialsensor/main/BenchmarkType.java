@@ -13,7 +13,7 @@ public enum BenchmarkType
     MASSIVE_INSERTION("Massive Insertion", "MassiveInsertion"), SINGLE_INSERTION("Single Insertion", "SingleInsertion"), DELETION(
         "Delete Graph", "DeleteGraph"), FIND_NEIGHBOURS("Find Neighbours of All Nodes", "FindNeighbours"), FIND_ADJACENT_NODES(
         "Find Adjacent Nodes of All Edges", "FindAdjacent"), FIND_SHORTEST_PATH("Find Shortest Path", "FindShortest"), CLUSTERING(
-        "Clustering", "Clustering");
+        "Clustering", "Clustering"), KOUT("KOUT", "KOUT");
 
     public static final Set<BenchmarkType> INSERTING_BENCHMARK_SET = new HashSet<BenchmarkType>();
     static

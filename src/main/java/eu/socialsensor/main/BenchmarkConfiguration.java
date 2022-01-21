@@ -59,6 +59,8 @@ public class BenchmarkConfiguration {
     private static final String CACHE_VALUES_COUNT = "cache-values-count";
     private static final String PERMUTE_BENCHMARKS = "permute-benchmarks";
     private static final String RANDOM_NODES = "shortest-path-random-nodes";
+    private static final String KOUT_RANDOM_NODES = "kout-random-nodes";
+    private static final String KOUT_DEPTH = "kout-depth";
 
     // hugegraph configuration
     private static final String HUGEGRAPH_URL = "url";
@@ -95,6 +97,10 @@ public class BenchmarkConfiguration {
 
     // shortest path
     private final int randomNodes;
+
+    // kout
+    private final int koutRandomNodes;
+    private final int koutDepth;
 
     // clustering
     private final Boolean randomizedClustering;
@@ -229,6 +235,9 @@ public class BenchmarkConfiguration {
         }
 
         randomNodes = socialsensor.getInteger(RANDOM_NODES, new Integer(100));
+
+        koutRandomNodes = socialsensor.getInteger(KOUT_RANDOM_NODES, new Integer(10));
+        koutDepth = socialsensor.getInteger(KOUT_DEPTH, new Integer(3));
 
         if (this.benchmarkTypes.contains(BenchmarkType.CLUSTERING)) {
             if (!socialsensor.containsKey(NODES_COUNT)) {
@@ -373,6 +382,14 @@ public class BenchmarkConfiguration {
 
     public int getRandomNodes() {
         return randomNodes;
+    }
+
+    public int getKoutRandomNodes() {
+        return koutRandomNodes;
+    }
+
+    public int getKoutDepth() {
+        return koutDepth;
     }
 
     public long getCsvReportingInterval() {

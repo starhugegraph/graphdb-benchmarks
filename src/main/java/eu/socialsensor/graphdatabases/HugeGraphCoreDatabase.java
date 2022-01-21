@@ -29,8 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.baidu.hugegraph.config.ConfigOption;
 import com.baidu.hugegraph.config.HugeConfig;
-import com.baidu.hugegraph.config.ServerOptions;
+import com.baidu.hugegraph.structure.constant.Traverser;
+import com.baidu.hugegraph.traversal.algorithm.KoutTraverser;
 import com.baidu.hugegraph.type.define.NodeRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,6 +59,9 @@ import eu.socialsensor.insert.HugeGraphCoreMassiveInsertion;
 import eu.socialsensor.insert.HugeGraphCoreSingleInsertion;
 import eu.socialsensor.main.BenchmarkConfiguration;
 import eu.socialsensor.main.GraphDatabaseType;
+
+import static com.baidu.hugegraph.config.OptionChecker.allowValues;
+import static com.baidu.hugegraph.config.OptionChecker.disallowEmpty;
 
 public class HugeGraphCoreDatabase extends GraphDatabaseBase<
                                            Iterator<Vertex>,
@@ -233,6 +238,15 @@ public class HugeGraphCoreDatabase extends GraphDatabaseBase<
                                                 Collections.singletonList(SIMILAR), 5,
                                                 -1, 0, -1).vertices();
         LOG.debug("{}", path);
+    }
+
+    @Override
+    public void kout(Object sourceId, int depth) {
+        Id sId = HugeVertex.getIdValue(sourceId);
+        KoutTraverser traverser = new KoutTraverser(this.graph);
+        Set<Id> resultList = traverser.kout(sId, Directions.BOTH, null, depth, true,
+                Traverser.DEFAULT_MAX_DEGREE, Traverser.DEFAULT_CAPACITY, Traverser.DEFAULT_ELEMENTS_LIMIT);
+        LOG.debug("kout sourceId: {}, depth: {}, result.size: {}", sourceId, depth, resultList.size());
     }
 
     @Override
@@ -510,11 +524,28 @@ public class HugeGraphCoreDatabase extends GraphDatabaseBase<
             graph.initBackend();
             // start graph
             HugeConfig config = new HugeConfig(conf);
-            Id serverId =  IdGenerator.of(config.get(ServerOptions.SERVER_ID));
-            NodeRole role = NodeRole.valueOf(config.get(ServerOptions.SERVER_ROLE).toUpperCase());
+            Id serverId =  IdGenerator.of(config.get(SERVER_ID));
+            NodeRole role = NodeRole.valueOf(config.get(SERVER_ROLE).toUpperCase());
             graph.serverStarted(serverId, role);
         }
 
         return graph;
     }
+
+    public static final ConfigOption<String> SERVER_ID =
+            new ConfigOption<>(
+                    "server.id",
+                    "The id of hugegraph-server.",
+                    disallowEmpty(),
+                    "server-1"
+            );
+
+    public static final ConfigOption<String> SERVER_ROLE =
+            new ConfigOption<>(
+                    "server.role",
+                    "The role of nodes in the cluster, available types are " +
+                            "[master, worker, computer]",
+                    allowValues("master", "worker", "computer"),
+                    "master"
+            );
 }

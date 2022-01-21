@@ -177,6 +177,12 @@ public class HugeGraphDatabase extends GraphDatabaseBase<
         buildGraphEnv(false);
     }
 
+    /* KO */
+    @Override
+    public void open(boolean initSchema) {
+        buildGraphEnv(false, initSchema);
+    }
+
     @Override
     public void shutdown() {
     }
@@ -187,6 +193,10 @@ public class HugeGraphDatabase extends GraphDatabaseBase<
     }
 
     private void buildGraphEnv(boolean clear) {
+        buildGraphEnv(clear, true);
+    }
+
+    private void buildGraphEnv(boolean clear, boolean initSchema) {
         this.hugeClient = HugeClient.builder(
                 this.conf.getHugegraphUrl(), this.conf.getHugegraphSpace(), this.conf.getHugegraphGraph())
                 .configTimeout(CLIENT_TIMEOUT).build();
@@ -196,17 +206,20 @@ public class HugeGraphDatabase extends GraphDatabaseBase<
         if (clear) {
             this.clearAll();
         }
-        schema.propertyKey(COMMUNITY).asInt().ifNotExist().create();
-        schema.propertyKey(NODE_COMMUNITY).asInt().ifNotExist().create();
-        schema.vertexLabel(NODE)
-              .properties(COMMUNITY, NODE_COMMUNITY)
-              .nullableKeys(COMMUNITY, NODE_COMMUNITY)
-              .useCustomizeNumberId().ifNotExist().create();
-        schema.edgeLabel(SIMILAR).link(NODE, NODE).ifNotExist().create();
-        schema.indexLabel("nodeByCommunity")
-              .onV(NODE).by(COMMUNITY).ifNotExist().create();
-        schema.indexLabel("nodeByNodeCommunity")
-              .onV(NODE).by(NODE_COMMUNITY).ifNotExist().create();
+
+        if (initSchema) {
+            schema.propertyKey(COMMUNITY).asInt().ifNotExist().create();
+            schema.propertyKey(NODE_COMMUNITY).asInt().ifNotExist().create();
+            schema.vertexLabel(NODE)
+                    .properties(COMMUNITY, NODE_COMMUNITY)
+                    .nullableKeys(COMMUNITY, NODE_COMMUNITY)
+                    .useCustomizeNumberId().ifNotExist().create();
+            schema.edgeLabel(SIMILAR).link(NODE, NODE).ifNotExist().create();
+            schema.indexLabel("nodeByCommunity")
+                    .onV(NODE).by(COMMUNITY).ifNotExist().create();
+            schema.indexLabel("nodeByNodeCommunity")
+                    .onV(NODE).by(NODE_COMMUNITY).ifNotExist().create();
+        }
     }
 
     private void clearAll() {
@@ -231,6 +244,11 @@ public class HugeGraphDatabase extends GraphDatabaseBase<
         this.hugeClient.schema().getPropertyKeys().forEach(propertyKey -> {
             this.hugeClient.schema().removePropertyKey(propertyKey.name());
         });
+    }
+
+    public void kout(Object sourceId, int depth) {
+        List<Object> resultList = this.hugeClient.traverser().kout(sourceId, depth);
+        LOG.info("kout sourceId: {}, depth: {}, result.size: {}", sourceId, depth, resultList.size());
     }
 
     @Override

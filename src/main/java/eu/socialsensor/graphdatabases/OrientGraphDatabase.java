@@ -26,6 +26,7 @@ import eu.socialsensor.insert.OrientSingleInsertion;
 import eu.socialsensor.main.BenchmarkConfiguration;
 import eu.socialsensor.main.GraphDatabaseType;
 import eu.socialsensor.utils.Utils;
+import org.apache.commons.lang.NotImplementedException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -119,6 +120,11 @@ public class OrientGraphDatabase extends GraphDatabaseBase<Iterator<Vertex>, Ite
     public void shutdownMassiveGraph()
     {
         shutdown();
+    }
+
+    @Override
+    public void kout(Object sourceId, int depth) {
+        throw new NotImplementedException();
     }
 
     @Override

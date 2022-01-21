@@ -29,6 +29,7 @@ public abstract class GraphDatabaseBase<VertexIteratorType, EdgeIteratorType, Ve
     private final Timer getOtherVertexFromEdgeTimes;
     private final Timer getAllEdgesTimes;
     private final Timer shortestPathTimes;
+    private final Timer koutTimes;
 
     protected GraphDatabaseBase(GraphDatabaseType type, File dbStorageDirectory)
     {
@@ -40,6 +41,7 @@ public abstract class GraphDatabaseBase<VertexIteratorType, EdgeIteratorType, Ve
         this.getOtherVertexFromEdgeTimes = GraphDatabaseBenchmark.metrics.timer(queryTypeContext + "getOtherVertexFromEdge");
         this.getAllEdgesTimes = GraphDatabaseBenchmark.metrics.timer(queryTypeContext + "getAllEdges");
         this.shortestPathTimes = GraphDatabaseBenchmark.metrics.timer(queryTypeContext + "shortestPath");
+        this.koutTimes = GraphDatabaseBenchmark.metrics.timer(queryTypeContext + "kout");
         
         this.dbStorageDirectory = dbStorageDirectory;
         if (!this.dbStorageDirectory.exists())
@@ -154,6 +156,38 @@ public abstract class GraphDatabaseBase<VertexIteratorType, EdgeIteratorType, Ve
                 ctxt = shortestPathTimes.time();
                 try {
                     shortestPath(from, i);
+                } finally {
+                    ctxt.stop();
+                }
+            }
+            if(this instanceof Neo4jGraphDatabase) {
+                ((Transaction) tx).success();
+            }
+        } finally {//TODO fix this
+            if(GraphDatabaseType.NEO4J == type) {
+                ((Transaction) tx).finish();
+            }
+        }
+    }
+
+    @Override
+    public void open(boolean initSchema) {
+        open();
+    }
+
+    @Override
+    public void kouts(Set<Object> nodes, int depth) {
+        Object tx = null;
+        if(GraphDatabaseType.NEO4J == type) {//TODO fix this
+            tx = ((Neo4jGraphDatabase) this).neo4jGraph.beginTx();
+        }
+        try {
+            Timer.Context ctxt;
+            for(Object i : nodes) {
+                //time this
+                ctxt = koutTimes.time();
+                try {
+                    kout(i, depth);
                 } finally {
                     ctxt.stop();
                 }

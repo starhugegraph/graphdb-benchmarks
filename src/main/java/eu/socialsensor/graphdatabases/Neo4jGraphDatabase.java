@@ -9,6 +9,7 @@ import eu.socialsensor.main.BenchmarkingException;
 import eu.socialsensor.main.GraphDatabaseType;
 import eu.socialsensor.utils.Utils;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.neo4j.graphalgo.GraphAlgoFactory;
 import org.neo4j.graphalgo.PathFinder;
 import org.neo4j.graphdb.Direction;
@@ -184,6 +185,11 @@ public class Neo4jGraphDatabase extends GraphDatabaseBase<Iterator<Node>, Iterat
         }
 
         inserter = null;
+    }
+
+    @Override
+    public void kout(Object sourceId, int depth) {
+        throw new NotImplementedException();
     }
 
     @Override

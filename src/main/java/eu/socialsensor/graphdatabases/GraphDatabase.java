@@ -45,6 +45,13 @@ public interface GraphDatabase<VertexIteratorType, EdgeIteratorType, VertexType,
     public void open();
 
     /**
+     * Opens the graph database
+     *
+     * @param initSchema
+     */
+    public void open(boolean initSchema);
+
+    /**
      * Creates a graph database and configures for single data insertion
      * 
      * @param dbPath
@@ -109,6 +116,19 @@ public interface GraphDatabase<VertexIteratorType, EdgeIteratorType, VertexType,
      *            any number of random nodes
      */
     public void shortestPath(final VertexType fromNode, Integer node);
+
+    /**
+     * Find the kout neighbors of the vertexes in the list
+     * @param nodes
+     */
+    public void kouts(Set<Object> nodes, int depth);
+
+    /**
+     * Execute kout query from the Query interface
+     * @param sourceId
+     * @param depth
+     */
+    public void kout(Object sourceId, int depth);
 
     /**
      * @return the number of nodes

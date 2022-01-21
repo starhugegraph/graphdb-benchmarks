@@ -47,6 +47,7 @@ import eu.socialsensor.insert.TitanSingleInsertion;
 import eu.socialsensor.main.BenchmarkConfiguration;
 import eu.socialsensor.main.GraphDatabaseType;
 import eu.socialsensor.utils.Utils;
+import org.apache.commons.lang.NotImplementedException;
 
 /**
  * Titan graph database implementation
@@ -78,7 +79,7 @@ public class TitanGraphDatabase extends GraphDatabaseBase<Iterator<Vertex>, Iter
     @Override
     public void open()
     {
-        open(false /* batchLoading */);
+        openInternal(false /* batchLoading */);
     }
 
     private static final Configuration generateBaseTitanConfiguration(GraphDatabaseType type, File dbPath,
@@ -208,7 +209,7 @@ public class TitanGraphDatabase extends GraphDatabaseBase<Iterator<Vertex>, Iter
         return TitanFactory.open(conf);
     }
 
-    private void open(boolean batchLoading)
+    private void openInternal(boolean batchLoading)
     {
         if(type == GraphDatabaseType.TITAN_DYNAMODB && config.getDynamodbPrecreateTables()) {
             List<CreateTableRequest> requests = new LinkedList<>();
@@ -250,7 +251,7 @@ public class TitanGraphDatabase extends GraphDatabaseBase<Iterator<Vertex>, Iter
     @Override
     public void createGraphForMassiveLoad()
     {
-        open(true /* batchLoading */);
+        openInternal(true /* batchLoading */);
         createSchema();
 
         batchGraph = new BatchGraph<TitanGraph>(titanGraph, VertexIDType.NUMBER, 100000 /* bufferSize */);
@@ -345,6 +346,11 @@ public class TitanGraphDatabase extends GraphDatabaseBase<Iterator<Vertex>, Iter
         }
         batchGraph = null;
         titanGraph = null;
+    }
+
+    @Override
+    public void kout(Object sourceId, int depth) {
+        throw new NotImplementedException();
     }
 
     @Override

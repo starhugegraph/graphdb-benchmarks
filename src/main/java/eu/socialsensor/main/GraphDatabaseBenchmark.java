@@ -6,6 +6,7 @@ import eu.socialsensor.benchmarks.DeleteGraphBenchmark;
 import eu.socialsensor.benchmarks.FindNeighboursOfAllNodesBenchmark;
 import eu.socialsensor.benchmarks.FindNodesOfAllEdgesBenchmark;
 import eu.socialsensor.benchmarks.FindShortestPathBenchmark;
+import eu.socialsensor.benchmarks.KoutBenchmark;
 import eu.socialsensor.benchmarks.MassiveInsertionBenchmark;
 import eu.socialsensor.benchmarks.SingleInsertionBenchmark;
 
@@ -125,6 +126,9 @@ public class GraphDatabaseBenchmark
                 break;
             case FIND_SHORTEST_PATH:
                 benchmark = new FindShortestPathBenchmark(config);
+                break;
+            case KOUT:
+                benchmark = new KoutBenchmark(config);
                 break;
             case DELETION:
                 benchmark = new DeleteGraphBenchmark(config);

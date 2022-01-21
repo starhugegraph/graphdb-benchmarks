@@ -31,6 +31,7 @@ import eu.socialsensor.main.BenchmarkConfiguration;
 import eu.socialsensor.main.BenchmarkingException;
 import eu.socialsensor.main.GraphDatabaseType;
 import eu.socialsensor.utils.Utils;
+import org.apache.commons.lang.NotImplementedException;
 
 /**
  * Sparksee graph database implementation
@@ -188,6 +189,11 @@ public class SparkseeGraphDatabase extends GraphDatabaseBase<ObjectsIterator, Ob
     public void delete()
     {
         Utils.deleteRecursively(dbStorageDirectory);
+    }
+
+    @Override
+    public void kout(Object sourceId, int depth) {
+        throw new NotImplementedException();
     }
 
     @Override
